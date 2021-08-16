@@ -54,7 +54,7 @@ export class AirportService {
     }
 
     generateAirportsMap(airports: Airport[]): Map<string, Airport> {
-        return this.airports.reduce((acc, airport) => {
+        return airports.reduce((acc, airport) => {
             return acc.set(airport.iata, airport);
         }, new Map());
     }

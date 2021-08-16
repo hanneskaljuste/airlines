@@ -72,6 +72,7 @@ export class TravelGraphService {
     setTravelGraph(graph) {
         this.graph = graph;
     }
+
     getTravelGraph() {
         return this.graph;
     }
@@ -79,6 +80,15 @@ export class TravelGraphService {
 
 
 
+    /**
+     * Breadth first search on a given graph
+     *
+     * @param {*} graph
+     * @param {string} origin
+     * @param {string} destination
+     * @return {*}  {Promise<Journey>}
+     * @memberof TravelGraphService
+     */
     async bfs(graph, origin: string, destination: string): Promise<Journey> {
         let bestResult = null;
         let queue = [{ nodes: [origin], distance: 0, hopsAvailable: 6 }];
@@ -109,6 +119,19 @@ export class TravelGraphService {
         }
     }
 
+    /**
+     * Adds new path to queue for given input node on graph.
+     * If new path score is higher than best known one, no new path will be added.
+     *
+     * @param {*} graph
+     * @param {*} node
+     * @param {*} path
+     * @param {*} queue
+     * @param {*} visited
+     * @param {*} currentBest
+     * @return {*}
+     * @memberof TravelGraphService
+     */
     calcQueue(graph, node, path, queue, visited, currentBest) {
         graph.adjacent(node).forEach(adjacent => {
             if (visited.indexOf(adjacent) < 0) {
