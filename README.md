@@ -1,5 +1,10 @@
 ## Development server
 
-Run `ng serve api` for a dev api server. Navigate to <http://localhost:3333/api>
+Project is in nx workspace, generated with npx create-nx-workspace and contains nestjs API server and Angular webapp.
 
-Example journey calculation: <http://localhost:3333/api/journey/BCN/TLL>
+Run `nx serve api`
+Example journey calculation: <http://localhost:3333/api/journey/TLL/BCN>
+
+Webapp available:
+
+Run `nx serve` then head to <http://localhost:4200>
