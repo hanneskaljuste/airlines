@@ -23,3 +23,5 @@ Airports: <https://raw.githubusercontent.com/jpatokal/openflights/master/data/ai
 Routes: <https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat>
 
 Airports without IATA code are removed from list. (Routes are only IATA based).
+
+Search also implemented only using IATA codes.
