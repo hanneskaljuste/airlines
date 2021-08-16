@@ -22,10 +22,10 @@ export class AirportService {
             } else {
                 this.utils.readCsvData(CsvHeaders.AIRPORT, 'airports.dat').then(
                     (airports: Airport[]) => {
-                        this.setAirports(airports);
-                        this.setAirportsMap(this.generateAirportsMap(airports));
-                        this.utils.writeToCache(this.FILEPATH, JSON.stringify(airports));
-                        resolve(airports);
+                        this.setAirports(airports.filter(airport => airport.iata.length > 2));
+                        this.setAirportsMap(this.generateAirportsMap(this.getAirports()));
+                        this.utils.writeToCache(this.FILEPATH, JSON.stringify(this.getAirports()));
+                        resolve(this.getAirports());
                     }
                 );
             }

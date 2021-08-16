@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Airport, Journey, Route } from '@sixfold/api-interfaces';
 import Graph = require('graph-data-structure');
 import { AirportService } from '../airport/airport.service';
@@ -49,7 +49,7 @@ export class TravelGraphService {
                 routes.forEach((route: Route) => {
                     if (!edgeCheck.has(route.source_airport + route.destination_airport) && airport.iata === route.source_airport && airportsMap.has(route.destination_airport)) {
                         edgeCheck.add(route.source_airport + route.destination_airport);
-                        g.addEdge(route.source_airport, route.destination_airport, this.utils.calculateDistanceBetweePoints(airportsMap[route.source_airport], airportsMap.get(route.destination_airport)));
+                        g.addEdge(route.source_airport, route.destination_airport, this.utils.calculateDistanceBetweePoints(airportsMap.get(route.source_airport), airportsMap.get(route.destination_airport)));
                     }
                 });
             });
@@ -82,25 +82,26 @@ export class TravelGraphService {
     async bfs(graph, origin: string, destination: string): Promise<Journey> {
         let bestResult = null;
         let queue = [{ nodes: [origin], distance: 0, hopsAvailable: 6 }];
+        this.logger.log(`Initial queue: ${JSON.stringify(queue)}`);
         const visited = [];
         let currentBest = 100000000;
-        while (queue.length > 0) {
-            const path = queue.shift();
-            const node = path.nodes[path.nodes.length - 1];
-            queue = this.calcQueue(graph, node, path, queue, visited, currentBest);
-            if (node === destination) {
-                if (currentBest > path.distance) {
-                    currentBest = path.distance;
-                    bestResult = path;
+        // only start looking when destination has edges
+        if (graph.adjacent(destination).length > 0) {
+            while (queue.length > 0) {
+                const path = queue.shift();
+                const node = path.nodes[path.nodes.length - 1];
+                queue = this.calcQueue(graph, node, path, queue, visited, currentBest);
+                if (node === destination) {
+                    if (currentBest > path.distance) {
+                        currentBest = path.distance;
+                        bestResult = path;
+                    }
                 }
+                visited.push(node);
             }
-            visited.push(node);
         }
         if (!bestResult) {
-            return {
-                distance: 0,
-                steps: []
-            };
+            throw new NotFoundException('No results found');
         }
         return {
             distance: Math.floor(bestResult.distance),

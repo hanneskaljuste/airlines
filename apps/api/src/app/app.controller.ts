@@ -26,7 +26,7 @@ export class AppController {
     }
 
 
-    @Get('graph/:origin/:destination')
+    @Get('journey/:origin/:destination')
     async getGraph(@Param('origin') origin: string, @Param('destination') destination: string): Promise<Journey> {
         return await this.appService.getJourney(origin, destination);
     }

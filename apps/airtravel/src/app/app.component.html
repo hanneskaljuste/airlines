@@ -1,42 +1,55 @@
-<mat-toolbar>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-        <mat-icon>menu</mat-icon>
-    </button>
-    <span>My App</span>
-    <span class="example-spacer"></span>
-    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
-    </button>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
-    </button>
-</mat-toolbar>
+<!-- <div class="wrapper"> -->
+<!-- <input type="text" />
+    <ul>
+        <li *ngFor="let origin of origins">{{ origin.name }}</li>
+    </ul> -->
 
-<form class="example-form">
-    <mat-form-field class="example-full-width" appearance="fill">
-        <!-- <mat-label>Number</mat-label> -->
-        <input type="text" placeholder="Search for start" aria-label="Start" matInput [formControl]="startFilterControl"
-            [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            <mat-option *ngFor="let option of filteredStart | async" [value]="option.name"
-                (onSelectionChange)="selected('start', option)">
-                {{option.name}}
+<form class="wrapper example-form" (ngSubmit)="submit()">
+    <mat-form-field class="example-full-width">
+        <input
+            type="text"
+            placeholder="Origin airport"
+            aria-label="Origin airport"
+            matInput
+            [formControl]="originControl"
+            [matAutocomplete]="origin"
+        />
+        <mat-autocomplete #origin="matAutocomplete">
+            <mat-option
+                *ngFor="let origin of origins$ | async"
+                [value]="origin.iata"
+            >
+                {{ origin.name }} ({{ origin.country }})
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-
-
-    <mat-form-field class="example-full-width" appearance="fill">
-        <!-- <mat-label>Number</mat-label> -->
-        <input type="text" placeholder="Search for end" aria-label="End" matInput [formControl]="endFilterControl"
-            [matAutocomplete]="auto">
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            <mat-option *ngFor="let option of filteredEnd | async" [value]="option.name"
-                (onSelectionChange)="selected('end', option)">
-                {{option.name}}
+    <mat-form-field class="example-full-width">
+        <input
+            type="text"
+            placeholder="Destination airport"
+            aria-label="Destination airport"
+            matInput
+            [formControl]="destinationControl"
+            [matAutocomplete]="destination"
+        />
+        <mat-autocomplete #destination="matAutocomplete">
+            <mat-option
+                *ngFor="let destination of destinations$ | async"
+                [value]="destination.iata"
+            >
+                {{ destination.name }} ({{ destination.country }})
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-
+    <section>
+        <button mat-flat-button color="primary">Search</button>
+    </section>
 </form>
-<!-- <pre>{{airports$ | async | json}}</pre> -->
+
+<pre *ngIf="result && result.distance">{{ result | json }}</pre>
+<pre *ngIf="result && result.status && result.status === 404">
+No results found</pre
+>
+<div class="spinner">
+    <mat-progress-bar mode="query" *ngIf="loading"></mat-progress-bar>
+</div>
