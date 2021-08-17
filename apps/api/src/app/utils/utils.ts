@@ -75,4 +75,9 @@ export class Utils {
         });
     }
 
+
+    checkIata(code: string): boolean {
+        return /^[a-zA-Z]{3}$/.test(code);
+    }
+
 }

@@ -1,12 +1,13 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param } from '@nestjs/common';
 
 import { Airport, Journey, Route } from '@sixfold/api-interfaces';
 
 import { AppService } from './app.service';
+import { Utils } from './utils/utils';
 
 @Controller()
 export class AppController {
-    constructor(private readonly appService: AppService) {}
+    constructor(private readonly appService: AppService, private utils: Utils) {}
 
 
     @Get('status')
@@ -28,7 +29,10 @@ export class AppController {
 
     @Get('journey/:origin/:destination')
     async getGraph(@Param('origin') origin: string, @Param('destination') destination: string): Promise<Journey> {
-        return await this.appService.getJourney(origin, destination);
+        if (!this.utils.checkIata(origin) || !this.utils.checkIata(destination)) {
+            throw new BadRequestException('Input data incorrect');
+        }
+        return await this.appService.getJourney(origin.toUpperCase(), destination.toUpperCase());
     }
 
 }
